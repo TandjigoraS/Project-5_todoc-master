@@ -1,0 +1,217 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+
+Project "1" o-"*" Task : contains
+
+
+
+namespace Pojo{
+Project "1" o- "*" Task : contains
+
+}
+
+namespace Database{
+Dao.TaskDao -- MyRoomDatabase
+Dao.ProjectDao -- MyRoomDatabase
+MyRoomDatabase "1" o- "*" Pojo.Task : contains
+
+}
+namespace Model{
+TaskViewModel - Repositories.TaskRepository
+TaskViewModel *-- Sort.SortingType
+AddTaskViewModel -- AddTaskViewState
+TaskViewModel -- TaskViewState
+
+
+
+}
+
+
+namespace UI {
+TasksAdapter *-- TaskViewHolder
+TasksAdapter -- MainActivity
+MainActivity - Model.AddTaskViewModel
+MainActivity - Model.TaskViewModel
+MainActivity - MyDialogFragment
+
+}
+
+namespace Repositories{
+TaskRepository -- Database.MyRoomDatabase
+
+}
+
+
+
+
+
+
+package UI <<Node>>{
+class MainActivity {
+-adapter : TasksAdapter
+-listTasks : RecyclerView
+-lblNoTasks : TextView
+-mTaskViewModel : TaskViewModel
++onCreate(Bundle savedInstanceState)
++onCreateOptionsMenu(Menu menu)
++onOptionsItemSelected(MenuItem item)
+}
+
+class MyDialogFragment{
+-dialogEditText : EditText
+-dialogSpinner : Spinner
++dialog : AlertDialog
+-allProjects :  Project[]
+-mAddTaskViewModel : AddTaskViewModel
++onCreateDialog(@Nullable Bundle savedInstanceState) : Dialog
+}
+
+class TasksAdapter {
+-tasks : List<Task>
+-updateTasks()
++onCreateViewHolder(ViewGroup viewGroup, int viewType)
++onBindViewHolder(TaskViewHolder taskViewHolder, int position)
++getItemCount() : int
+}
+
+class TaskViewHolder{
+-imgProject : AppCompatImageView
+-lblTaskName : TextView
+-lblProjectName : TextView
+-imgDelete : AppCompatImageView
+-bind(Task task)
++onClick(view v)
+}
+}
+
+
+
+package Model <<Node>>{
+class TaskViewModel{
+-mTaskRepository : TaskRepository
+-mListTasks : LiveData<List<Task>>
+-mViewStateMediatorLiveData : MediatorLiveData<List<Task>>
+-mAlphabeticalSortingMutableLiveData : MutableLiveData<AlphabeticalSorting>
+-mChronologicalSortingMutableLiveData : MutableLiveData<ChronologicalSorting>
++onChanged(List<Task> tasks)
++onChanged(AlphabeticalSorting alphabeticalSorting)
++onChanged(ChronologicalSorting chronologicalSorting)
+-combine(List<Task> myListTasks,AlphabeticalSorting alphabeticalSorting,ChronologicalSorting chronologicalSorting)
+-compareTasks(Task task1,Task task2,AlphabeticalSorting alphabeticalSorting,ChronologicalSorting chronologicalSorting)
++sortNewestFirst()
++sortOldestFirst()
++sortAlphabetical()
++sortAlphabeticalInverted()
++sortInit
++deleteTask(Task task)
++getTasksViewStateLiveData() : LiveData<TaskViewState>
+}
+
+class AddTaskViewModel{
+-mTaskRepository : TaskRepository
+-mApplication : Application
+-mAddTaskViewStateMutableLiveData : MutableLiveData<AddTaskViewState>
+-taskIsAdded : SingleLiveEvent<Boolean>
++addTask(Project taskProject, String taskName, LocalTime time)
++getTaskIsAdded() : SingleLiveEvent<Boolean>
++getAddTaskViewStateMutableLiveData() : LiveData<AddTaskViewState>
+}
+
+class TaskViewState{
+-mStateRecyclerView : int
+-mStateTextView : int
+-mTaskList : List<Task>
++getStateRecyclerView() : int
++getStateTextView() : int
++getTaskList() : List<Task>
+}
+
+class AddTaskViewState {
+-mTaskNameError : String
+-hasTaskProject : boolean
++getTaskNameError() : String
+}
+}
+
+package Repositories <<Node>>{
+class TaskRepository{
+-mTaskDao : TaskDao
++getListTasks() : LiveData<List<Task>>
++insert(Task task)
++deleteTask(Task task)
+}
+}
+
+package Pojo <<Node>> {
+class Task {
+-id : long <PrimaryKey>
+-projectId : long <ForeignKey>
+-name : String
+-localDateTime : LocalDateTime
+-setId(id : long)
++getId() : long
+-setProjectId(projectId : long)
++getProjectId() : long
+-setName(name: String)
++getName() : String
+-setLocalDateTime(localDateTime : LocalDateTime)
++getLocalDateTime() : LocalDateTime
++getProject() : Project
+}
+
+
+class Project {
+-id : long <PrimaryKey>
+-name : String
+-color : int
++getAllProject() : Project
++getProjectById(id : long) : Project
++getId() : long
++getName() : String
++getColor() : int
++toString() : String
+}
+}
+
+
+package Database <<Database>>{
+abstract class MyRoomDatabase {
+-{abstract} getTaskDao() : TaskDao
+-{abstract} getProjectDao() : ProjectDao
+-{static} INSTANCE : MyRoomDatabase
+-{static} NUMBER_OF_THREADS : int=5
+#databaseWriteExecutor : ExecutorService
+-{static}sRoomDatabaseCallback : RoomDatabase.Callback
+{static}+getDatabase(Context context) : MyRoomDatabase <synchronized>
+}
+}
+
+package Dao <<Node>>{
+interface TaskDao {
+-insert (Task task)
+-deleteTask(Task task)
+-getMyListTasks() : LiveData<List<Task>>
+}
+
+
+interface ProjectDao {
+-deleteProject(Project Project)
+-addProject(Project project)
+-getAllProjects() : LiveData<List<Project>>
+}
+}
+
+
+package Sort <<Node>>{
+
+enum SortingType {
+ALPHABETICAL
+ALPHABETICAL_INVERTED
+RECENT_FIRST
+OLD_FIRST
+}
+
+
+
+@enduml
