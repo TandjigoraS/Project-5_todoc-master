@@ -40,7 +40,7 @@ import static org.junit.Assert.assertThat;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 @RunWith(AndroidJUnit4.class)
-public class MainActivityInstrumentedTest {
+public class MyInstrumentedTest {
 
     private String PROJECT = "Projet Tartampion";
 
