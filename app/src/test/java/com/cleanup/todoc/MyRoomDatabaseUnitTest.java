@@ -35,7 +35,6 @@ public class MyRoomDatabaseUnitTest {
     private TaskDao mTaskDao;
     private ProjectDao mProjectDao;
     private final Task TASK_DEMO = new Task(1L, "Lavez le sol", LocalDateTime.of(2021, 2, 20, 11, 30));
-    private final Task TASK_DEMO1 = new Task(2L, "Trier", LocalDateTime.of(2021, 2, 20, 11, 30));
 
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
