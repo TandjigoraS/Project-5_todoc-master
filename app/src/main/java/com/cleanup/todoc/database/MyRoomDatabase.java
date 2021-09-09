@@ -67,7 +67,6 @@ public abstract class MyRoomDatabase extends RoomDatabase {
             valueProject2.put("name", "Projet Lucidia");
             valueProject2.put("color", 0xFFB4CDBA);
 
-
             ContentValues valueProject3 = new ContentValues();
             valueProject3.put("id", 3L);
             valueProject3.put("name", "Projet Circus");

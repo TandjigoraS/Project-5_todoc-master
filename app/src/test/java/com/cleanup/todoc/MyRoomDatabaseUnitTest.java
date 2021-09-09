@@ -65,8 +65,7 @@ public class MyRoomDatabaseUnitTest {
 
         assertEquals(3, myListProject.length);
     }
-
-
+    
     @Test
     public void insertAndGetListTasks() throws InterruptedException {
         for (Project project :
@@ -101,7 +100,5 @@ public class MyRoomDatabaseUnitTest {
         assertEquals(0, myListTasksUpdate.size());
         assertFalse(myListTasksUpdate.contains(TASK_DEMO));
     }
-
-
 }
 
